@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCQ Test – Corporate Accounting</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#ffffff; --ink:#1b2437; --muted:#5d6b85; --line:#dfe4ee;
+    --brand:#1f4e78; --brand2:#2f6db0; --ok:#1f8a4c; --warn:#c0392b; --amber:#b9770e;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0f1420; --card:#182033; --ink:#e8edf7; --muted:#9aa8c4; --line:#2a3550;
+      --brand:#5b9bdc; --brand2:#7db3ec; --ok:#4cc783; --warn:#ff7b6b; --amber:#f0b04a; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+  .wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:1.5rem;margin:8px 0 4px} h2{font-size:1.15rem;margin:0 0 12px}
+  .sub{color:var(--muted);margin:0 0 20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05)}
+  .hidden{display:none!important}
+  .subject{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:18px;
+    border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);
+    cursor:pointer;font-size:1rem;margin-bottom:12px;transition:.15s}
+  .subject:hover{border-color:var(--brand2);transform:translateY(-1px)}
+  .subject .ic{font-size:1.8rem} .subject b{display:block;font-size:1.1rem}
+  .subject span{color:var(--muted);font-size:.9rem}
+  label{display:block;font-weight:600;margin:14px 0 6px}
+  input[type=text]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;
+    font-size:1rem;background:var(--bg);color:var(--ink)}
+  input[type=text]:focus{outline:none;border-color:var(--brand2)}
+  .btn{display:inline-block;background:var(--brand);color:#fff;border:0;border-radius:10px;
+    padding:12px 22px;font-size:1rem;font-weight:600;cursor:pointer}
+  .btn:hover{background:var(--brand2)} .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+  .btn.danger{background:var(--warn)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .rules{background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:12px 16px;
+    margin:16px 0;font-size:.92rem;color:var(--muted)}
+  .rules li{margin:3px 0}
+  .err{color:var(--warn);font-weight:600;margin-top:12px;min-height:1.2em}
+  /* exam */
+  .bar{position:sticky;top:0;z-index:5;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;
+    align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .timer{font-size:1.4rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .timer.low{color:var(--warn)}
+  .chip{font-size:.85rem;padding:4px 10px;border-radius:99px;background:var(--bg);border:1px solid var(--line)}
+  .chip.bad{color:var(--warn);border-color:var(--warn);font-weight:700}
+  .progress{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:14px}
+  .progress i{display:block;height:100%;background:var(--brand2);width:0;transition:.2s}
+  .qtext{font-size:1.1rem;font-weight:600;margin:0 0 16px}
+  .opt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1.5px solid var(--line);
+    border-radius:10px;margin-bottom:10px;cursor:pointer;background:var(--card)}
+  .opt:hover{border-color:var(--brand2)} .opt.sel{border-color:var(--brand);background:rgba(47,109,176,.12)}
+  .opt input{margin-top:4px}
+  .pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:8px;margin-top:18px}
+  .pal button{padding:8px 0;border-radius:8px;border:1.5px solid var(--line);background:var(--card);
+    color:var(--ink);cursor:pointer;font-weight:600}
+  .pal button.done{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .pal button.cur{outline:3px solid var(--brand2)}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+  /* modal */
+  .ov{position:fixed;inset:0;background:rgba(10,15,30,.7);display:flex;align-items:center;
+    justify-content:center;padding:16px;z-index:50}
+  .modal{background:var(--card);border-radius:14px;max-width:460px;width:100%;padding:24px;
+    border-top:6px solid var(--warn)}
+  .modal.info{border-top-color:var(--brand)}
+  .modal h3{margin:0 0 8px;color:var(--warn)} .modal.info h3{color:var(--brand)}
+  .score{font-size:2.6rem;font-weight:800;color:var(--brand);margin:6px 0}
+  table.res{width:100%;border-collapse:collapse;margin-top:12px}
+  table.res td{padding:9px 4px;border-bottom:1px solid var(--line)} table.res td:last-child{text-align:right;font-weight:700}
+  .spinner{width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--brand);
+    border-radius:50%;animation:sp .8s linear infinite;display:inline-block;vertical-align:middle}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .noselect{user-select:none;-webkit-user-select:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 1. SUBJECT SELECTION -->
+  <section id="scrSubject">
+    <h1>Online MCQ Test</h1>
+    <p class="sub">Select your subject to begin.</p>
+    <div class="card" id="subjectList"></div>
+  </section>
+
+  <!-- 2. STUDENT DETAILS -->
+  <section id="scrDetails" class="hidden">
+    <div class="card">
+      <h2 id="detSubject"></h2>
+      <div class="rules"><ul style="margin:0;padding-left:18px">
+        <li><b>25 questions</b> • <b>15 minutes</b> • 1 mark each</li>
+        <li>No negative marking for wrong answers.</li>
+        <li><b>Do not switch tabs or minimise the browser.</b> Every switch is recorded as suspected malpractice and <b>10% of total marks</b> are deducted each time.</li>
+        <li>The test auto-submits when the time is over.</li>
+      </ul></div>
+      <label for="inName">Full Name</label>
+      <input type="text" id="inName" autocomplete="off" placeholder="Enter your name">
+      <label for="inReg">Register Number</label>
+      <input type="text" id="inReg" autocomplete="off" placeholder="Enter your register number">
+      <div class="err" id="detErr"></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ghost" id="btnBack">← Back</button>
+        <button class="btn" id="btnStart">Start Exam</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. EXAM -->
+  <section id="scrExam" class="hidden noselect">
+    <div class="bar">
+      <div><div class="timer" id="timer">15:00</div></div>
+      <div class="row">
+        <span class="chip" id="chipCount">Answered 0/25</span>
+        <span class="chip" id="chipViol">Tab switches: 0</span>
+      </div>
+    </div>
+    <div class="progress"><i id="progBar"></i></div>
+    <div class="card">
+      <div class="sub" id="qNo" style="margin-bottom:6px"></div>
+      <p class="qtext" id="qText"></p>
+      <div id="qOpts"></div>
+      <div class="nav">
+        <button class="btn ghost" id="btnPrev">← Previous</button>
+        <button class="btn ghost" id="btnClear">Clear answer</button>
+        <button class="btn" id="btnNext">Next →</button>
+      </div>
+      <div class="pal" id="palette"></div>
+      <div style="margin-top:20px;text-align:right">
+        <button class="btn danger" id="btnSubmit">Submit Exam</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. RESULT -->
+  <section id="scrResult" class="hidden">
+    <div class="card" style="text-align:center">
+      <h2>Exam Submitted ✔</h2>
+      <p class="sub" id="resWho"></p>
+      <div id="resBody"></div>
+    </div>
+  </section>
+</div>
+
+<!-- Loading overlay -->
+<div class="ov hidden" id="ovLoad"><div class="modal info" style="text-align:center">
+  <div class="spinner"></div><p id="loadMsg" style="margin:10px 0 0">Please wait…</p></div></div>
+
+<!-- Tab-switch warning -->
+<div class="ov hidden" id="ovWarn"><div class="modal">
+  <h3>⚠ Warning: Tab switch detected</h3>
+  <p id="warnMsg"></p>
+  <p style="color:var(--muted);font-size:.9rem">This has been recorded as <b>suspected malpractice</b>. You may continue the exam, but further switches will cause further deductions.</p>
+  <div style="text-align:right"><button class="btn" id="btnWarnOk">I understand – Continue</button></div>
+</div></div>
+
+<!-- Confirm submit -->
+<div class="ov hidden" id="ovConfirm"><div class="modal info">
+  <h3>Submit the exam?</h3><p id="confirmMsg"></p>
+  <div class="row" style="justify-content:flex-end">
+    <button class="btn ghost" id="btnConfNo">Go back</button>
+    <button class="btn danger" id="btnConfYes">Yes, submit</button></div>
+</div></div>
+
+<script>
+/* =====================  CONFIGURATION  ===================== */
+const CONFIG = {
+  // Paste the Web App URL from Google Apps Script "Deploy > New deployment"
+  API_URL: 'https://script.google.com/macros/s/AKfycbxAsFSXhzfh75mIAyh_B310_846SnpGbjQ3naOq5Eko9vW28g4M7zkfkKNINqHZRKuulQ/exec',
+
+  SUBJECTS: [
+    { name: 'Corporate Accounting', icon: '📘', desc: '25 questions • 15 minutes' }
+    // To add more subjects: add a line here AND add questions with the same
+    // Subject name in the "Questions" tab of your Google Sheet.
+  ],
+  TOTAL_MARKS: 25,
+  PENALTY_PERCENT: 10,        // must match Code.gs
+  TRACK_WINDOW_BLUR: false    // true = also flag switching to another app/window (may give false alarms)
+};
+/* ========================================================== */
+
+const $ = id => document.getElementById(id);
+const S = { subject:null, name:'', reg:'', token:null, questions:[], answers:{}, idx:0,
+            deadline:0, violations:0, active:false, submitting:false, timerId:null, lastViolMs:0 };
+
+/* ---------- API ---------- */
+async function api(payload){
+  const res = await fetch(CONFIG.API_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},   // avoids CORS pre-flight
+    body: JSON.stringify(payload),
+    keepalive: payload.action === 'violation'
+  });
+  return res.json();
+}
+function showScreen(id){
+  ['scrSubject','scrDetails','scrExam','scrResult'].forEach(s => $(s).classList.toggle('hidden', s !== id));
+  window.scrollTo(0,0);
+}
+function loading(on,msg){ $('ovLoad').classList.toggle('hidden',!on); if(msg) $('loadMsg').textContent = msg; }
+
+/* ---------- 1. Subject ---------- */
+CONFIG.SUBJECTS.forEach(s => {
+  const b = document.createElement('button');
+  b.className = 'subject';
+  b.innerHTML = '<span class="ic"></span><div><b></b><span></span></div>';
+  b.querySelector('.ic').textContent = s.icon;
+  b.querySelector('b').textContent = s.name;
+  b.querySelector('div span').textContent = s.desc;
+  b.onclick = () => { S.subject = s.name; $('detSubject').textContent = s.name; $('detErr').textContent=''; showScreen('scrDetails'); $('inName').focus(); };
+  $('subjectList').appendChild(b);
+});
+$('btnBack').onclick = () => showScreen('scrSubject');
+
+/* ---------- 2. Start ---------- */
+$('btnStart').onclick = async () => {
+  const name = $('inName').value.trim().replace(/\s+/g,' ');
+  const reg  = $('inReg').value.trim().toUpperCase();
+  if (name.length < 2) return $('detErr').textContent = 'Please enter your full name.';
+  if (!/^[A-Z0-9\-\/]{3,25}$/.test(reg)) return $('detErr').textContent = 'Enter a valid register number (letters/numbers only).';
+  if (CONFIG.API_URL.startsWith('PASTE_')) return $('detErr').textContent = 'Admin: set API_URL in index.html first.';
+  $('detErr').textContent = '';
+  S.name = name; S.reg = reg;
+  loading(true,'Preparing your question paper…');
+  try{
+    const r = await api({action:'start', subject:S.subject, name, reg});
+    if(!r.ok){ loading(false); return $('detErr').textContent = r.error; }
+    S.token = r.token; S.questions = r.questions; S.violations = r.violations || 0;
+    S.deadline = Date.now() + r.remainingSec*1000;
+    S.answers = {}; S.idx = 0;
+    try{ const saved = JSON.parse(localStorage.getItem('ans_'+S.token)||'{}'); if(r.resumed) S.answers = saved; }catch(e){}
+    S.active = true;
+    loading(false);
+    showScreen('scrExam');
+    renderQuestion(); renderPalette(); updateChips(); startTimer();
+  }catch(err){
+    loading(false); $('detErr').textContent = 'Could not reach the server. Check your internet and try again.';
+  }
+};
+
+/* ---------- 3. Exam ---------- */
+function renderQuestion(){
+  const q = S.questions[S.idx];
+  $('qNo').textContent = `Question ${S.idx+1} of ${S.questions.length}`;
+  $('qText').textContent = q.q;
+  const box = $('qOpts'); box.innerHTML = '';
+  q.options.forEach(opt => {
+    const l = document.createElement('label'); l.className = 'opt' + (S.answers[q.id]===opt?' sel':'');
+    l.style.fontWeight = '400'; l.style.margin = '0 0 10px';
+    const inp = document.createElement('input'); inp.type='radio'; inp.name='opt'; inp.checked = S.answers[q.id]===opt;
+    inp.onchange = () => { S.answers[q.id] = opt; persist(); renderQuestion(); renderPalette(); updateChips(); };
+    const sp = document.createElement('span'); sp.textContent = opt;
+    l.append(inp, sp); box.appendChild(l);
+  });
+  $('btnPrev').disabled = S.idx === 0;
+  $('btnNext').disabled = S.idx === S.questions.length-1;
+  $('progBar').style.width = (Object.keys(S.answers).length / S.questions.length * 100) + '%';
+}
+function renderPalette(){
+  const p = $('palette'); p.innerHTML = '';
+  S.questions.forEach((q,i) => {
+    const b = document.createElement('button'); b.textContent = i+1;
+    if (S.answers[q.id]) b.classList.add('done');
+    if (i === S.idx) b.classList.add('cur');
+    b.onclick = () => { S.idx = i; renderQuestion(); renderPalette(); };
+    p.appendChild(b);
+  });
+}
+function updateChips(){
+  $('chipCount').textContent = `Answered ${Object.keys(S.answers).length}/${S.questions.length}`;
+  const pen = +(S.violations * CONFIG.PENALTY_PERCENT/100 * CONFIG.TOTAL_MARKS).toFixed(2);
+  const c = $('chipViol'); c.textContent = `Tab switches: ${S.violations}` + (S.violations?` (−${pen} marks)`:'');
+  c.classList.toggle('bad', S.violations>0);
+}
+function persist(){ try{ localStorage.setItem('ans_'+S.token, JSON.stringify(S.answers)); }catch(e){} }
+$('btnPrev').onclick = () => { if(S.idx>0){ S.idx--; renderQuestion(); renderPalette(); } };
+$('btnNext').onclick = () => { if(S.idx<S.questions.length-1){ S.idx++; renderQuestion(); renderPalette(); } };
+$('btnClear').onclick = () => { delete S.answers[S.questions[S.idx].id]; persist(); renderQuestion(); renderPalette(); updateChips(); };
+
+/* ---------- Timer ---------- */
+function startTimer(){
+  clearInterval(S.timerId);
+  const tick = () => {
+    const left = Math.max(0, Math.round((S.deadline - Date.now())/1000));
+    const m = String(Math.floor(left/60)).padStart(2,'0'), s = String(left%60).padStart(2,'0');
+    $('timer').textContent = `${m}:${s}`;
+    $('timer').classList.toggle('low', left <= 60);
+    if (left <= 0){ clearInterval(S.timerId); submitExam(true); }
+  };
+  tick(); S.timerId = setInterval(tick, 250);
+}
+
+/* ---------- Tab-switch detection ---------- */
+function registerViolation(evt){
+  if (!S.active || S.submitting) return;
+  const now = Date.now();
+  if (now - S.lastViolMs < 1500) return;          // avoid double count (blur + visibilitychange)
+  S.lastViolMs = now;
+  S.violations++;
+  updateChips();
+  S.pendingWarn = true;
+  api({action:'violation', token:S.token, event:evt}).catch(()=>{});
+  // If the page is already visible again (e.g. blur mode), show warning now
+  if (document.visibilityState === 'visible') showWarning();
+}
+function showWarning(){
+  if (!S.pendingWarn || !S.active) return;
+  S.pendingWarn = false;
+  const each = CONFIG.PENALTY_PERCENT/100*CONFIG.TOTAL_MARKS;
+  const total = +(S.violations*each).toFixed(2);
+  $('warnMsg').innerHTML = `You left the exam tab. <b>Switch #${S.violations}</b> — <b>${CONFIG.PENALTY_PERCENT}% of total marks (${each} marks)</b> deducted. Total deduction so far: <b>${total} marks</b>.`;
+  $('ovWarn').classList.remove('hidden');
+}
+$('btnWarnOk').onclick = () => $('ovWarn').classList.add('hidden');
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') registerViolation('Switched browser tab / minimised window');
+  else showWarning();
+});
+if (CONFIG.TRACK_WINDOW_BLUR){
+  window.addEventListener('blur', () => registerViolation('Window lost focus'));
+}
+// light deterrents
+document.addEventListener('contextmenu', e => { if(S.active) e.preventDefault(); });
+document.addEventListener('copy', e => { if(S.active) e.preventDefault(); });
+window.addEventListener('beforeunload', e => { if(S.active && !S.submitting){ e.preventDefault(); e.returnValue=''; } });
+
+/* ---------- 4. Submit ---------- */
+$('btnSubmit').onclick = () => {
+  const un = S.questions.length - Object.keys(S.answers).length;
+  $('confirmMsg').textContent = un ? `You have ${un} unanswered question(s). Submit anyway?` : 'All questions answered. Submit now?';
+  $('ovConfirm').classList.remove('hidden');
+};
+$('btnConfNo').onclick = () => $('ovConfirm').classList.add('hidden');
+$('btnConfYes').onclick = () => { $('ovConfirm').classList.add('hidden'); submitExam(false); };
+
+async function submitExam(auto){
+  if (S.submitting) return;
+  S.submitting = true;
+  $('ovWarn').classList.add('hidden');
+  loading(true, auto ? 'Time is up – submitting your answers…' : 'Submitting your answers…');
+  for (let attempt=1; attempt<=4; attempt++){
+    try{
+      const r = await api({action:'submit', token:S.token, answers:S.answers,
+                           clientViolations:S.violations, auto});
+      if (r.ok){ S.active=false; clearInterval(S.timerId); loading(false); try{localStorage.removeItem('ans_'+S.token);}catch(e){} return showResult(r); }
+      loading(false); S.active=false; clearInterval(S.timerId);
+      return showResultError(r.error);
+    }catch(err){
+      await new Promise(res => setTimeout(res, 1500*attempt));
+    }
+  }
+  // all retries failed – let student retry manually, keep answers
+  loading(false); S.submitting = false;
+  alert('Could not submit – please check your internet connection and press "Submit Exam" again. Your answers are saved on this page.');
+}
+function showResult(r){
+  showScreen('scrResult');
+  $('resWho').textContent = `${S.name} • ${S.reg} • ${S.subject}`;
+  if (!r.showScore){
+    $('resBody').innerHTML = '<p>Your responses have been recorded. Results will be announced by your teacher.</p>';
+    return;
+  }
+  $('resBody').innerHTML = `
+    <div class="score">${r.finalScore} / ${r.total}</div>
+    <table class="res">
+      <tr><td>Questions attempted</td><td>${r.attempted}</td></tr>
+      <tr><td>Correct answers</td><td>${r.correct}</td></tr>
+      <tr><td>Wrong answers (no negative marks)</td><td>${r.wrong}</td></tr>
+      <tr><td>Not attempted</td><td>${r.notAttempted}</td></tr>
+      <tr><td>Score before penalty</td><td>${r.rawScore}</td></tr>
+      <tr><td>Tab switches (suspected malpractice)</td><td>${r.violations}</td></tr>
+      <tr><td>Marks deducted</td><td>${r.penalty}</td></tr>
+    </table>`;
+}
+function showResultError(msg){
+  showScreen('scrResult');
+  $('resBody').textContent = msg || 'Submission problem. Please inform your invigilator.';
+}
+</script>
+</body>
+</html>
